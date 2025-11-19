@@ -1,51 +1,54 @@
-import { useEffect, useState } from "react";
-import { getPersons, addPerson, updatePerson, deletePerson } from "./api";
+import React, { useState, useEffect } from "react";
 import PersonForm from "./PersonForm";
-import PersonList from "./PersonList";
+import "./App.css";
 
-export default function App() {
+function App() {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [persons, setPersons] = useState([]);
-  const [editing, setEditing] = useState(null);
 
-  const loadData = async () => {
-    const data = await getPersons();
-    setPersons(data);
+  const fetchPersons = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/persons`);
+      const data = await res.json();
+      setPersons(data);
+    } catch (err) {
+      console.error("Error fetching persons:", err);
+    }
+  };
+
+  const handleSave = async (person) => {
+    try {
+      const res = await fetch(`${apiUrl}/persons`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(person),
+      });
+      if (res.ok) {
+        const newPerson = await res.json();
+        setPersons([...persons, newPerson]);
+      }
+    } catch (err) {
+      console.error("Error saving person:", err);
+    }
   };
 
   useEffect(() => {
-    loadData();
+    fetchPersons();
   }, []);
-
-  const handleSave = async (person) => {
-    if (editing) {
-      await updatePerson(editing.id, person);
-      setEditing(null);
-    } else {
-      await addPerson(person);
-    }
-    loadData();
-  };
-
-  const handleDelete = async (id) => {
-    await deletePerson(id);
-    loadData();
-  };
 
   return (
     <div className="App">
-  <h1>React CRUD for .NET API</h1>
-
-  <PersonForm onSave={handleSave} initial={editing} />
-
-  {persons.map((p) => (
-    <div key={p.id} className="person-item">
-      <strong>{p.name}</strong> ({p.age})
+      <h1>React CRUD - Persons</h1>
+      <PersonForm onSave={handleSave} />
       <div>
-        <button onClick={() => setEditing(p)}>Edit</button>
-        <button className="delete" onClick={() => handleDelete(p.id)}>Delete</button>
+        {persons.map((p) => (
+          <div key={p.id} className="person-item">
+            <strong>{p.name}</strong> ({p.age})
+          </div>
+        ))}
       </div>
     </div>
-  ))}
-</div>
   );
 }
+
+export default App;
