@@ -32,16 +32,20 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>React CRUD for .NET API</h1>
+    <div className="App">
+  <h1>React CRUD for .NET API</h1>
 
-      <PersonForm onSave={handleSave} initial={editing} />
+  <PersonForm onSave={handleSave} initial={editing} />
 
-      <PersonList
-        persons={persons}
-        onEdit={(p) => setEditing(p)}
-        onDelete={handleDelete}
-      />
+  {persons.map((p) => (
+    <div key={p.id} className="person-item">
+      <strong>{p.name}</strong> ({p.age})
+      <div>
+        <button onClick={() => setEditing(p)}>Edit</button>
+        <button className="delete" onClick={() => handleDelete(p.id)}>Delete</button>
+      </div>
     </div>
+  ))}
+</div>
   );
 }
