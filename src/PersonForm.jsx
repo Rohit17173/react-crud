@@ -1,34 +1,34 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function PersonForm({ onSave, initial }) {
-  const [name, setName] = useState(initial?.name || "");
-  const [age, setAge] = useState(initial?.age || "");
+function PersonForm({ onSave }) {
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ name, age: Number(age) });
+    if (!name || !age) return;
+    onSave({ name, age: parseInt(age) });
     setName("");
     setAge("");
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+    <form onSubmit={handleSubmit}>
       <input
+        type="text"
         placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        required
       />
-
       <input
+        type="number"
         placeholder="Age"
         value={age}
-        type="number"
         onChange={(e) => setAge(e.target.value)}
-        required
       />
-
-      <button type="submit">Save</button>
+      <button type="submit">Add Person</button>
     </form>
   );
 }
+
+export default PersonForm;
