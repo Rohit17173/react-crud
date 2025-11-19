@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import './App.css';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function App() {
