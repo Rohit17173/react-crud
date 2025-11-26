@@ -46,10 +46,6 @@ pnpm-debug.log*
 
 
 
-build/
-
-
-
 # Environment variables
 
 .env
