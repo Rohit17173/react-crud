@@ -44,7 +44,7 @@ pnpm-debug.log*
 
 # Build output
 
-dist/
+
 
 build/
 
